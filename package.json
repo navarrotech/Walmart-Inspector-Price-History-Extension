@@ -1,0 +1,55 @@
+{
+  "name": "walmart-inspector-price-history-tracker",
+  "version": "1.0.0",
+  "description": "A Chrome extension superior Walmart price inspection and dark mode.",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Alex Navarro",
+    "email": "alex@navarrotech.net"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "yarn": ">=1.22.0"
+  },
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec \"npm run build\"",
+    "build": "rimraf dist && esbuild src/contentScript.ts --bundle --outfile=dist/contentScript.js --platform=browser --format=iife",
+    "typecheck": "tsc",
+    "test": "vitest run --dom --coverage",
+    "test:dev": "cross-env DEBUG_PRINT_LIMIT=100000 vitest watch --ui --dom --coverage.enabled=false --reporter verbose",
+    "lint": "eslint . --ext ts,tsx --max-warnings 0",
+    "purge": "yarn clean && npx rimraf node_modules/",
+    "clean": "npx rimraf test/ && npx rimraf dist/",
+    "reinstall": "yarn purge && yarn install",
+    "preflight": "yarn && yarn test && yarn lint && yarn typecheck && yarn build && yarn clean && echo Preflight complete, all set to send!"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@stylistic/eslint-plugin-js": "^2.12.0",
+    "@types/csso": "^5.0.4",
+    "@types/selenium-webdriver": "^4.1.28",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "chalk": "^5.4.1",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.24.2",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-google": "^0.14.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-i18next": "^6.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "nodemon": "^3.1.9",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.15.0",
+    "vitest": "^2.1.8"
+  }
+}
