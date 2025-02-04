@@ -1,0 +1,149 @@
+// Copyright © 2025 Navarrotech
+
+@use 'sass:color'
+@use 'sass:math'
+
+// Color: https://brandcenter.walmart.com/brand/brand-identity/color
+// Font: https://brandcenter.walmart.com/brand/brand-identity/typography
+// Everyday Sans UI Web
+
+// ////////////////////// //
+//        Variables       //
+// ////////////////////// //
+
+$walmartTrueBlue: #0053E2
+$walmartSparkYellow: #FFC220
+$walmartSky: #A9DDF7
+$walmartEveryday: #4DBDF5
+$walmartBentonville: #001E60
+
+$primary: $walmartTrueBlue
+$secondary: $walmartSparkYellow
+
+$family-primary: EverydaySans, "Everyday Sans Web", "Helvetica Neue", Helvetica, Arial, sans-serif
+$primary: $walmartTrueBlue,
+$link: $walmartSparkYellow
+
+$colors: ( primary: $primary, link: $link )
+
+$switch-background-color: #b0afaf
+
+:root
+  --bulma-body-family: $family-primary
+
+
+// ////////////////////// //
+//          Fonts         //
+// ////////////////////// //
+
+@font-face
+    font-display: swap
+    font-family: EverydaySans
+    font-style: normal
+    font-weight: 700
+    src: url(https://i5.walmartimages.com/dfw/63fd9f59-e9f0/d563bf01-1a1a-4c99-a92c-b336074713d9/v1/EverydaySans-Bold.woff2) format("woff2"),url(https://i5.walmartimages.com/dfw/63fd9f59-49a0/e814800b-24c8-42d0-a45b-292a4d539f57/v1/EverydaySans-Bold.woff) format("woff")
+
+@font-face
+    font-display: swap
+    font-family: EverydaySans
+    font-style: normal
+    font-weight: 400
+    src: url(https://i5.walmartimages.com/dfw/63fd9f59-e9f0/d563bf01-1a1a-4c99-a92c-b336074713d9/v1/EverydaySans-Regular.woff2) format("woff2"),url(https://i5.walmartimages.com/dfw/63fd9f59-49a0/e814800b-24c8-42d0-a45b-292a4d539f57/v1/EverydaySans-Regular.woff) format("woff")
+
+
+// ////////////////////// //
+//     SCSS Libraries     //
+// ////////////////////// //
+
+@import "bulma.scss"
+
+
+// ////////////////////// //
+//      SCSS Elements     //
+// ////////////////////// //
+
+.switch
+  position: relative
+  display: inline-block
+  font-size: 0.9rem // Base font size
+  height: 1.625em // Equivalent to 26px
+  cursor: pointer
+
+  &.is-rounded
+    .slider
+      border-radius: 2.125em // 34px / 16px = 2.125em
+      &:before
+        border-radius: 50%
+
+  input
+    opacity: 0
+    width: 0
+    height: 0
+    display: none
+
+    &:checked + .slider:before
+      transform: translateX(1.375em) // 22px / 16px ≈ 1.375em
+
+  @each $name, $color in $colors
+    &.is-#{$name}
+      input:focus + .slider
+        box-shadow: 0 0 0.0625em $color !important // 1px ≈ 0.0625em
+
+      input:checked + .slider
+        background-color: $color !important
+
+  .slider
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    width: 3em // Equivalent to 48px if 1rem = 16px
+    background-color: $switch-background-color
+    transition: 300ms
+    box-shadow: 0 0 0.125em 0.0625em rgba(0, 0, 0, 0.11) // 2px 1px
+
+    &:before
+      position: absolute
+      content: ""
+      height: 1.375em // 22px / 16px ≈ 1.375em
+      width: 1.375em
+      left: 0.125em // 2px / 16px = 0.125em
+      bottom: 0.11em
+      background-color: white
+      transition: 400ms
+
+  & + label
+    margin-left: 0.4em
+
+  // Size Modifiers
+  &.is-small
+    font-size: 0.8rem
+
+  &.is-medium
+    font-size: 1rem
+
+  &.is-large
+    font-size: 1.15rem
+
+  .label
+    margin-left: calc((1.375em * 2) + 0.5rem)
+
+
+// ////////////////////// //
+//          Popup         //
+// ////////////////////// //
+
+*
+  font-family: $family-primary
+
+body, html
+  min-width: 420px // Nice
+  min-height: 200px
+
+.header
+  background: $primary
+  color: white
+
+.block:not(:last-child)
+  padding-bottom: 1em

@@ -1,5 +1,12 @@
-Dark mode
-Price tracker
-Store price comparison
-Total w/ tax estimator
-Price alerts
+MVP:
+  (50%) Dark theme
+  (50%) Banana theme
+  (33%) Price tracker
+  (50%) Settings to enable/disable graphs
+  (0%) Settings to opt in / out of sending updated prices
+  (0%) Affiliate Ids
+
+Roadmap:
+  (0%) Store price comparison
+  (0%) Total w/ tax estimator
+  (0%) Price alerts

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Copyright © 2025 Navarrotech -->
+    <meta content="utf-8" http-equiv="encoding">
+    <meta name="viewport" content="initial-scale=1">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+
+    <!-- Icon -->
+    <link rel="shortcut icon" href="../icons/image.png" type="image/x-icon">
+    <link rel="icon" href="../icons/image.png" type="image/x-icon">
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="./dist/popup.css" />
+
+    <title>Walmart Inspector</title>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <div class="block px-3 py-2">
+        <h1 class="title is-size-4">Walmart Inspector</h1>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="block py-3 px-4">
+      <!-- Theme picker -->
+      <div class="block field">
+        <label class="label">Change Walmart.com theme</label>
+        <div class="control">
+          <div class="select">
+            <select id="theme-picker">
+              <option value="default">Default Walmart (no change)</option>
+              <option value="dark">Dark theme</option>
+              <option value="banana">Banana theme</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="block field">
+        <div class="control">
+          <label
+            title="Enable or disable history graphs"
+            htmlFor="toggle-history-graphs"
+            class="switch is-rounded is-primary">
+            <input
+              checked
+              type='checkbox'
+              id="toggle-history-graphs" />
+            <span class='slider'></span>
+            <span class="label">Enable history graphs</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Version -->
+    <p class="has-text-right mr-2 ml-2" id="version"></p>
+
+    <!-- Javascript -->
+    <script src="./dist/popup.js"></script>
+  </body>
+</html>
