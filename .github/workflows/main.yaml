@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: node_modules
-          key: ${{ steps.cache-deps.outputs.cache-key }}
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
 
       - name: Check if any of the previous steps failed
         run: |
