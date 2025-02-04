@@ -5,8 +5,13 @@ MVP:
   (50%) Settings to enable/disable graphs
   (0%) Settings to opt in / out of sending updated prices
   (0%) Affiliate Ids
+  (0%) Backwards compatability
+  (0%) Safari support
+  (0%) Firefox support
+  (0%) Edge support
 
 Roadmap:
+  (0%) Unit tests
   (0%) Store price comparison
   (0%) Total w/ tax estimator
   (0%) Price alerts
