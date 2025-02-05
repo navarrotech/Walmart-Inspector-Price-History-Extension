@@ -1,4 +1,163 @@
 // Copyright © 2025 Navarrotech
 
+// Dark theme: Flip the color scheme for dark mode
+
+$background: #111112
+
+:root
+  color-scheme: dark
+  --color-core-white: var(--color-core-gray-180)
+  --color-core-gray-5: #252526 // Default: #f8f8f8
+  --color-core-gray-160: #909298 // Default: #2e2f32
+
 html
-  background: black
+  background: $background
+  color: var(--color-core-blue-70)
+
+  // Backgrounds
+
+  .bg-white
+    background-color: $background !important
+    color: var(--color-core-gray-10)
+
+  .bg-near-white
+    background: var(--color-core-gray-130)
+
+  .bg-near-white-primary
+    background: var(--color-core-gray-150)
+
+  .bg-washed-blue
+    background: var(--color-core-blue-130)
+
+  .bg-washed-green
+    background: var(--color-core-green-130)
+
+  .bg-washed-primary
+    background: var(--color-core-blue-160)
+
+  // Elements
+  .nav-control
+    background-color: var(--color-core-blue-90) !important
+    box-shadow: inset 0 0 0 .0625rem white
+
+  input[type="radio"]:checked + svg circle:last-child
+    fill: var(--color-core-blue-80)
+
+  input[type="checkbox"] + span,
+  input[type="checkbox"] + i + span
+    color: var(--color-core-gray-10)
+
+  img.pointer
+    filter: contrast(0.85)
+    border-radius: 6px
+
+  // Fonts
+  .dark-gray
+    color: var(--color-core-gray-10)
+  .mid-gray
+    color: var(--color-core-gray-20)
+  .gray
+    color: var(--color-core-gray-40)
+  .self-start,
+  .self-start *:not(.tag-leading-badge)
+    color: white !important
+  .black
+    color: white !important
+  .white
+    color: black
+  .dark-blue
+    color: var(--color-core-blue-20)
+  .blue
+    color: var(--color-core-blue-40)
+  .navy
+    color: var(--color-core-blue-10)
+  .green
+    color: var(--color-core-green-50)
+
+  // Specific fixes
+  .lh-copy
+      color: white !important
+  .lh-title
+      color: white !important
+
+  button[type="button"]:not(.white):not(.bg-transparent):not(.pointer):not(.h1)
+    background: var(--color-core-blue-100)
+    color: white
+
+    *
+      background-color: transparent !important
+      color: white !important
+
+  button.h1
+    color: white !important
+
+  button.hover-bg-dark-blue
+    color: white !important
+
+  button.bg-white.pointer.br-pill
+    color: white !important
+
+  button.bg-transparent
+    background-color: transparent !important
+
+  header[data-testid="responsiveHeader"]
+    div,
+    span,
+    i
+      color: white !important
+
+  #cart-badge
+    color: black !important
+
+  footer
+    .footer-wrapper
+      // Must be the same as bg-washed-primary
+      background: var(--color-core-blue-160)
+
+    .footer-list,
+    .footer-copyright
+      background: var(--color-core-blue-170)
+
+    .buy-box-container
+      background-color: var(--color-core-gray-180) !important
+    p
+      color: white
+
+  [data-testid="subscription-options-radio"] + div
+    background-color: var(--color-core-gray-130) !important
+    *
+      color: white !important
+
+  .buy-box-column .buy-box-container,
+  .sticky-buy-box-column .sticky-buy-box-container
+    background-color: var(--color-core-gray-180) !important
+
+  section div[role="listitem"] .pa1,
+  section div[role="listitem"] i
+    color: white
+
+  .search-bar
+    &:not(:focus)
+      background-color: var(--color-core-gray-20) !important
+    &:focus,
+    &:hover
+      background-color: white !important
+
+  div[data-item-id]
+    > a + div *:not(.tag-leading-badge)
+      color: var(--color-core-blue-30) !important
+
+  a[link-identifier="itemClick"] *
+    color: white
+
+  section > div:has([link-identifier="rateProductBanner"])
+    background-color: var(--color-core-gray-180) !important
+
+    .dark-gray + p
+      color: var(--color-core-gray-10) !important
+
+  .flex.shadow-1.bg-white.br3 div[style] // <-- Shadow loaders
+    background-color: var(--color-core-gray-160) !important
+
+  button[aria-label="View more, item details"]
+    background-color: transparent !important

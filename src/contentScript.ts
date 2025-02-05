@@ -500,4 +500,46 @@ import type * as Types from './types'
       }
     })
   })()
-})(document)
+})(document);
+
+(async function syncThemeDev() {
+  const THEME = 'dark'
+
+  const styleElement = document.createElement('style')
+  styleElement.id = 'theme'
+  document.head.appendChild(styleElement)
+
+  let blocking = false
+  let lastText = ''
+  async function get() {
+    if (blocking) {
+      return
+    }
+    try {
+      blocking = true
+      const response = await fetch(`http://127.0.0.1:5500/dist/themes/${THEME}.css`)
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch theme file')
+      }
+      const text = await response.text()
+
+      if (lastText !== text) {
+        console.log('CSS updated')
+        styleElement.innerHTML = text
+        lastText = text
+      }
+    }
+    catch {
+      // Do nothing
+    }
+    finally {
+      blocking = false
+    }
+  }
+
+  await get()
+
+  setInterval(() => {
+    get()
+  }, 500)
+})()
