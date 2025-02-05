@@ -18,9 +18,9 @@ const TOGGLE_GRAPHS_ELEMENT = document.getElementById('toggle-history-graphs') a
 chrome.storage.sync.get(
   {
     enableHistoryGraphs: true,
-    theme: 'default'
-  } as Types.Storage,
-  function onGetFeatures(result: Types.Storage) {
+    theme: 'dark'
+  } as Types.ExtensionStorage,
+  function onGetFeatures(result: Types.ExtensionStorage) {
     VERSION_ELEMENT.textContent = 'Version: ' + chrome.runtime.getManifest().version
     THEME_PICKER_ELEMENT.value = result.theme
     TOGGLE_GRAPHS_ELEMENT.checked = result.enableHistoryGraphs
@@ -33,7 +33,7 @@ THEME_PICKER_ELEMENT.addEventListener(
   function onThemeChange(event) {
     chrome.storage.sync.set({
       theme: (event.target as HTMLSelectElement).value
-    } as Types.Storage)
+    } as Types.ExtensionStorage)
   }
 )
 
@@ -43,6 +43,6 @@ TOGGLE_GRAPHS_ELEMENT.addEventListener(
   function onHistoryGraphsChange(event) {
     chrome.storage.sync.set({
       enableHistoryGraphs: (event.target as HTMLInputElement).checked
-    } as Types.Storage)
+    } as Types.ExtensionStorage)
   }
 )

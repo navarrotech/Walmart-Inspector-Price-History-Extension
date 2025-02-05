@@ -1,0 +1,74 @@
+// Copyright © 2025 Navarrotech
+
+// Spark light theme
+
+:root
+  color-scheme: light
+  --color-core-blue-100: var(--color-core-spark-100)
+  --color-core-blue-160: var(--color-core-spark-160)
+
+html
+  background: var(--color-core-spark-10)
+
+  // Backgrounds
+
+  .bg-primary
+    background-color: var(--color-core-spark-100) !important
+
+  .bg-white
+    background-color: var(--color-core-spark-10) !important
+
+  .bg-near-white
+    background-color: var(--color-core-spark-40) !important
+
+  .bg-near-white-primary
+    background: var(--color-core-spark-20)
+
+  .bg-blue,
+  .hover-bg-navy:not(:hover)
+    background-color: var(--color-core-spark-110)
+
+  .bg-dark-blue
+    background-color: var(--color-core-spark-120) !important
+
+  .bg-navy,
+  .hover-bg-navy:hover
+    background-color: var(--color-core-spark-130) !important
+    
+  .bg-washed-blue
+    background: var(--color-core-spark-60)
+
+  // Borders
+  .b--blue
+    border-color: var(--color-core-spark-150) !important
+  .b--washed-blue
+    border-color: var(--color-core-spark-60) !important
+  .b--navy
+    border-color: var(--color-core-spark-180) !important
+
+  // Colors
+  .blue
+    color: var(--color-core-spark-120) !important
+  .navy
+    color: var(--color-core-spark-180) !important
+
+  // Elements
+  button.bg-transparent
+    background-color: transparent !important
+
+  // Specific overrides
+
+  button[data-automation-id="checkout"],
+  [data-item-id] button.pointer
+    // (Buttons that should be spark)
+    background: var(--color-core-spark-100)
+    color: white
+
+    &:hover
+      background: var(--color-core-spark-110)
+
+  .cart-button button:not(:hover)
+    background-color: var(--color-core-spark-110) !important
+
+  header[data-testid="responsiveHeader"]
+    background-color: var(--color-core-spark-100)

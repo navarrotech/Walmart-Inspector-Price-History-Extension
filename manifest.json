@@ -32,7 +32,8 @@
     {
       "resources": [
         "dist/themes/dark.css",
-        "dist/themes/banana.css"
+        "dist/themes/bubblegum.css",
+        "dist/themes/spark.css"
       ],
       "matches": [
         "https://*.walmart.com/*"

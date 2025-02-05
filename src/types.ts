@@ -1,11 +1,23 @@
 // Copyright © 2025 Navarrotech
 
 export type Theme =
-| 'default'
-| 'dark'
-| 'banana'
+  | 'default'
+  | 'dark'
+  | 'bubblegum'
+  | 'spark'
 
-export type Storage = {
+export type ExtensionStorage = {
   theme: Theme
   enableHistoryGraphs: boolean
+}
+
+export type UnmountFunction = () => Promise<void>
+export type PageFunction = (match: RegExpMatchArray) => Promise<UnmountFunction>
+export type ItemReport = {
+  itemName?: string
+  itemId: string
+  price: number
+}
+export type FullItemReport = ItemReport & {
+  storeId: string
 }

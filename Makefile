@@ -31,7 +31,8 @@ build-js:
 build-css:
 	$(SASS) src/popup.sass $(DIST_DIR)/popup.css --style compressed
 	$(SASS) src/themes/dark.sass $(THEMES_DIR)/dark.css --style compressed
-	$(SASS) src/themes/banana.sass $(THEMES_DIR)/banana.css --style compressed
+	$(SASS) src/themes/bubblegum.sass $(THEMES_DIR)/bubblegum.css --style compressed
+	$(SASS) src/themes/spark.sass $(THEMES_DIR)/spark.css --style compressed
 
 # You can combine this with a watch command to watch for changes to a specific css theme.
 # nodemon --watch src --ext sass,scss --exec "make build-css-target -e theme=dark"

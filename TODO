@@ -1,14 +1,18 @@
 MVP:
-  (50%) Dark theme
-  (50%) Banana theme
+  (100%) Dark theme
+  (100%) Bubblegum pink theme
+  (0%) Bubblegum pink dark theme (black and pink look)
+  (100%) Spark yellow theme
+  (0%) Spark yellow dark theme (black and yellow look)
   (33%) Price tracker
   (50%) Settings to enable/disable graphs
   (0%) Settings to opt in / out of sending updated prices
   (0%) Affiliate Ids
-  (0%) Backwards compatability
-  (0%) Safari support
-  (0%) Firefox support
-  (0%) Edge support
+  (0%) Backwards compatability (CSS and JS)
+  (100%) Chrome extension support
+  (0%) Safari extension support
+  (0%) Firefox extension support
+  (0%) Edge extension support
 
 Roadmap:
   (0%) Unit tests

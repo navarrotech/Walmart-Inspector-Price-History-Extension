@@ -1,0 +1,69 @@
+// Copyright © 2025 Navarrotech
+
+// Bubblegum light theme
+
+:root
+  color-scheme: light
+  --color-core-blue-100: var(--color-core-pink-100)
+  --color-core-blue-160: var(--color-core-pink-160)
+
+html
+  background: var(--color-core-pink-10)
+
+  // Backgrounds
+
+  .bg-primary,
+    header[data-testid="responsiveHeader"]
+      background-color: var(--color-core-pink-110) !important
+
+  .bg-white
+    background-color: var(--color-core-pink-10) !important
+    
+  .bg-near-white
+    background-color: var(--color-core-spark-20) !important
+
+  .bg-near-white-primary
+    background: var(--color-core-pink-20)
+
+  .bg-blue,
+  .hover-bg-navy:not(:hover)
+    background-color: var(--color-core-pink-120)
+
+  .bg-dark-blue
+    background-color: var(--color-core-pink-80) !important
+
+  .bg-navy,
+  .hover-bg-navy:hover
+    background-color: var(--color-core-pink-140) !important
+    
+  .bg-washed-blue
+    background: var(--color-core-pink-40)
+
+  // Borders
+  .b--blue
+    border-color: var(--color-core-pink-100) !important
+  .b--washed-blue
+    border-color: var(--color-core-pink-40) !important
+  .b--navy
+    border-color: var(--color-core-pink-120) !important
+
+  // Colors
+  .blue
+    color: var(--color-core-pink-120) !important
+  .navy
+    color: var(--color-core-pink-180) !important
+
+  // Elements
+  button.bg-transparent
+    background-color: transparent !important
+
+  // Specific overrides
+
+  button[data-automation-id="checkout"],
+  [data-item-id] button.pointer
+    // (Buttons that should be pink)
+    background: var(--color-core-pink-100)
+    color: white
+
+    &:hover
+      background: var(--color-core-pink-110)
