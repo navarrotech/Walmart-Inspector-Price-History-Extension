@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "nodemon --watch src --ext ts,html,json,png,sass,scss --exec \"npm run build\"",
     "build": "make",
+    "release": "make release",
     "typecheck": "tsc",
     "test": "vitest run --dom --coverage",
     "test:dev": "cross-env DEBUG_PRINT_LIMIT=100000 vitest watch --ui --dom --coverage.enabled=false --reporter verbose",
@@ -25,13 +26,15 @@
     "preflight": "yarn && yarn test && yarn lint && yarn typecheck && yarn build && yarn clean && echo Preflight complete, all set to send!"
   },
   "dependencies": {
-    "bulma": "^1.0.3"
+    "bulma": "^1.0.3",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@stylistic/eslint-plugin-js": "^2.12.0",
     "@types/chrome": "^0.0.301",
     "@types/csso": "^5.0.4",
+    "@types/lodash-es": "^4.17.12",
     "@types/selenium-webdriver": "^4.1.28",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",

@@ -21,3 +21,18 @@ export type ItemReport = {
 export type FullItemReport = ItemReport & {
   storeId: string
 }
+
+// ////////////////// //
+//     Chrome IPC     //
+// ////////////////// //
+
+export type Topics =
+  'process-prices-data'
+
+export type Pub<Topic extends Topics = Topics> = {
+  topic: Topic
+  payload:
+    Topic extends 'process-prices-data'
+    ? FullItemReport[]
+    : never
+}

@@ -1,12 +1,13 @@
 // Copyright © 2025 Navarrotech
 
 // Typescript
-import type { UnmountFunction, PageFunction, ItemReport, FullItemReport } from '../types'
+import type { UnmountFunction, PageFunction, ItemReport, FullItemReport, Pub } from '../types'
 
 // Utility
 import { log, debug, warn, error } from '../loggers'
 import { getPathname, getQuery, parseSafe } from '../utility/utility'
 import { waitForElementToExist } from '../utility/elements'
+import { deepSearchKeyValue } from '@/utility/search'
 
 // Constants
 import { FAILED_PRICE_NUMBER } from '../constants'
@@ -77,9 +78,27 @@ import { FAILED_PRICE_NUMBER } from '../constants'
       ?.getAttribute('link-identifier')
         || item.getAttribute('data-item-id')
 
-    const priceElement = item.querySelector('[data-automation-id="product-price"] > *')
+    // Should return something like "current price $4.97"
+    let price: number = FAILED_PRICE_NUMBER
+    let priceElement = item.querySelector('[data-automation-id="product-price"] > span')
+    if (priceElement) {
+      price = priceTextToNumber(priceElement?.textContent)
+    }
 
-    const price = priceTextToNumber(priceElement?.textContent)
+    // Fallback 1
+    if (!priceElement || price === FAILED_PRICE_NUMBER) {
+      // Should return something like $497
+      priceElement = item.querySelector('[data-automation-id="product-price"] > *:first-child')
+      price = priceTextToNumber(priceElement?.textContent) / 100
+    }
+
+    // Fallback 2
+    if (!priceElement || price === FAILED_PRICE_NUMBER) {
+      // Worst case fallback
+      priceElement = item.querySelector('[data-automation-id="product-price"] > *')
+      price = priceTextToNumber(priceElement?.textContent)
+    }
+
     const itemName = item.querySelector('a span')?.textContent
 
     if (!itemId || !price || reportedItemIds[itemId]) {
@@ -121,18 +140,48 @@ import { FAILED_PRICE_NUMBER } from '../constants'
     // We need this because Walmart prices vary per store
 
     // Method A: Get it from their NEXT_DATA
+    let nextDataVar: Record<string, any> = null
+    try {
+      // @ts-ignore eslint-disable-next-line no-undef
+      nextDataVar = __NEXT_DATA__
+      // If nextDataVar is a script element for some reason...
+      if (nextDataVar?.tagName === 'SCRIPT') {
+        nextDataVar = parseSafe(nextDataVar.innerHTML)
+      }
+    }
+    catch {
+      log('No __NEXT_DATA__ found')
+      nextDataVar = null
+    }
     const nextDataElement = document.getElementById('__NEXT_DATA__')
-    if (nextDataElement) {
-      const nextData = parseSafe(nextDataElement.innerHTML)
+    if (nextDataElement || nextDataVar) {
+      const nextData = nextDataVar || parseSafe(nextDataElement.innerHTML)
 
-      const data = nextData?.props?.pageProps?.initialData?.data
+      debug('Found next data', nextData)
+
+      const initialData = nextData?.props?.pageProps?.initialData
+      const data = initialData?.data
       const modules = data?.contentLayout?.modules || []
 
-      for (const module of modules) {
-        const storeId = module?.configs?.ad?.storeId
-            || module?.configs?.ad?.adsContext?.locationContext?.storeId
-            || module?.configs?.ad?.adsContext?.locationContext?.pickupStore
-            || module?.configs?.ad?.adsContext?.locationContext?.deliveryStore
+      if (nextData?.pageProps?.initialTempoData?.data?.contentLayout?.pageMetadata?.location?.storeId) {
+        return nextData.pageProps.initialTempoData.data.contentLayout.pageMetadata.location.storeId
+      }
+
+      if (initialData?.moduleDataByZone?.topZone2?.configs?.ad?.storeId) {
+        return initialData?.moduleDataByZone?.topZone2?.configs?.ad?.storeId
+      }
+      if (data?.moduleDataByZone?.topZone2?.configs?.ad?.storeId) {
+        return data?.moduleDataByZone?.topZone2?.configs?.ad?.storeId
+      }
+      if (data?.contentLayout?.pageMetadata?.location?.storeId) {
+        return data?.contentLayout?.pageMetadata?.location?.storeId
+      }
+
+      for (const mod of modules) {
+        const storeId = mod?.configs?.ad?.storeId
+            || mod?.configs?.ad?.adsContext?.locationContext?.storeId
+            || mod?.configs?.ad?.adsContext?.locationContext?.pickupStore
+            || mod?.configs?.ad?.adsContext?.locationContext?.deliveryStore
         if (storeId) {
           return storeId
         }
@@ -145,6 +194,12 @@ import { FAILED_PRICE_NUMBER } from '../constants'
 
       if (storeId) {
         return storeId
+      }
+
+      const deepSearched = deepSearchKeyValue(nextData, 'storeId')
+      if (deepSearched) {
+        debug('Found store ID via deep search', deepSearched)
+        return deepSearched
       }
     }
 
@@ -181,6 +236,11 @@ import { FAILED_PRICE_NUMBER } from '../constants'
   async function reportPriceOfItemToDatabase(item: ItemReport | ItemReport[]) {
     const storeId = getStoreId()
 
+    if (storeId === 'unknown') {
+      log('Could not find store ID, skipping report')
+      return
+    }
+
     // Yeah I'll admit this is hard to read lol
     const items: FullItemReport[] = (
       Array.isArray(item)
@@ -203,6 +263,14 @@ import { FAILED_PRICE_NUMBER } from '../constants'
     }
 
     debug('Reporting price of item to database', items)
+
+    const payload: Pub<'process-prices-data'> = {
+      topic: 'process-prices-data',
+      payload: items
+    }
+
+    // Send the message to the extension (the background script)
+    chrome.runtime.sendMessage(payload)
   }
 
   // ////////////////////// //

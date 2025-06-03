@@ -60,13 +60,6 @@ jobs:
         run: yarn build
         continue-on-error: true
 
-      # Save cache
-      - name: Save node_modules cache
-        uses: actions/cache/save@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-dependencies-${{ hashFiles('yarn.lock') }}
-
       - name: Check if any of the previous steps failed
         run: |
           # Initialize a failure flag

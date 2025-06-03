@@ -22,8 +22,8 @@
     ],
     "i18next.i18nPaths": "c:/Git/defenseos-replay-gui/frontend/public/locales",
     "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 100,
+    "editor.wordWrapColumn": 120,
     "editor.rulers": [
-        100
+        120
     ],
 }

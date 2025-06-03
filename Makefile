@@ -15,16 +15,22 @@ RIMRAF := yarn rimraf
 # Default target
 all: build
 
+# Apply headers
+copyright-headers:
+	yarn tsx ./scripts/copyright-headers.ts
+
 # Clean the output directory
 clean:
 	$(RIMRAF) $(DIST_DIR)
 
 # Build all assets
-build: clean build-js build-css
+build: clean build-js build-css copyright-headers
+release: cross-env NODE_ENV=production build
 
 # Build JavaScript files with esbuild
 build-js:
 	$(ESBUILD) src/contentScript.ts --bundle --outfile=$(DIST_DIR)/contentScript.js --platform=browser --format=iife
+	$(ESBUILD) src/background.ts --bundle --outfile=$(DIST_DIR)/walmart-inspector-background.js --platform=browser --format=iife
 	$(ESBUILD) src/popup.ts --bundle --outfile=$(DIST_DIR)/popup.js --platform=browser --format=iife
 
 # Build CSS files with sass

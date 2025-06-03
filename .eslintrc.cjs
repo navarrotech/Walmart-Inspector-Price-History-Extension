@@ -196,7 +196,7 @@ module.exports = {
     'require-jsdoc': 'off',
 
     // Google ES2015 limits the max length of lines to 80, 120 is more reasonable
-    'max-len': ['error', { code: 300 }],
+    'max-len': ['error', { code: 120 }],
 
     //////////////////////////////////////////
     // Best practices

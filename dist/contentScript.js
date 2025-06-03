@@ -4,11 +4,18 @@
   var NAME = "Walmart Inspector";
   var FAILED_PRICE_NUMBER = -1;
 
+  // src/env.ts
+  var NODE_ENV = "development";
+  var isDev = NODE_ENV === "development";
+
   // src/loggers.ts
   function log(...messages) {
     console.log(NAME + " :: ", ...messages);
   }
   function debug(...messages) {
+    if (!isDev) {
+      return;
+    }
     console.debug(NAME + " :: ", ...messages);
   }
   function warn(...messages) {
@@ -54,6 +61,44 @@
     });
   }
 
+  // node_modules/lodash-es/isArray.js
+  var isArray = Array.isArray;
+  var isArray_default = isArray;
+
+  // node_modules/lodash-es/isObject.js
+  function isObject(value) {
+    var type = typeof value;
+    return value != null && (type == "object" || type == "function");
+  }
+  var isObject_default = isObject;
+
+  // src/utility/search.ts
+  function deepSearchKeyValue(data, key) {
+    if (isArray_default(data)) {
+      for (const item of data) {
+        const result = deepSearchKeyValue(item, key);
+        if (result !== void 0) {
+          return result;
+        }
+      }
+    } else if (isObject_default(data)) {
+      const obj = data;
+      if (Object.prototype.hasOwnProperty.call(obj, key) && (typeof obj[key] === "string" || typeof obj[key] === "number")) {
+        if (typeof obj[key] === "number") {
+          return String(obj[key]);
+        }
+        return obj[key];
+      }
+      for (const key2 of Object.keys(obj)) {
+        const result = deepSearchKeyValue(obj[key2], key2);
+        if (result !== void 0) {
+          return result;
+        }
+      }
+    }
+    return void 0;
+  }
+
   // src/contentScript/priceReporter.ts
   (async function walmartInspectorPriceReporterCS() {
     let reportedItemIds = {};
@@ -73,8 +118,19 @@
     }
     function analyzeStoreListingItem(item) {
       const itemId = item.querySelector("a[link-identifier]")?.getAttribute("link-identifier") || item.getAttribute("data-item-id");
-      const priceElement = item.querySelector('[data-automation-id="product-price"] > *');
-      const price = priceTextToNumber(priceElement?.textContent);
+      let price = FAILED_PRICE_NUMBER;
+      let priceElement = item.querySelector('[data-automation-id="product-price"] > span');
+      if (priceElement) {
+        price = priceTextToNumber(priceElement?.textContent);
+      }
+      if (!priceElement || price === FAILED_PRICE_NUMBER) {
+        priceElement = item.querySelector('[data-automation-id="product-price"] > *:first-child');
+        price = priceTextToNumber(priceElement?.textContent) / 100;
+      }
+      if (!priceElement || price === FAILED_PRICE_NUMBER) {
+        priceElement = item.querySelector('[data-automation-id="product-price"] > *');
+        price = priceTextToNumber(priceElement?.textContent);
+      }
       const itemName = item.querySelector("a span")?.textContent;
       if (!itemId || !price || reportedItemIds[itemId]) {
         return void 0;
@@ -97,13 +153,37 @@
       return res;
     }
     function getStoreId() {
+      let nextDataVar = null;
+      try {
+        nextDataVar = __NEXT_DATA__;
+        if (nextDataVar?.tagName === "SCRIPT") {
+          nextDataVar = parseSafe(nextDataVar.innerHTML);
+        }
+      } catch {
+        log("No __NEXT_DATA__ found");
+        nextDataVar = null;
+      }
       const nextDataElement = document.getElementById("__NEXT_DATA__");
-      if (nextDataElement) {
-        const nextData = parseSafe(nextDataElement.innerHTML);
-        const data = nextData?.props?.pageProps?.initialData?.data;
+      if (nextDataElement || nextDataVar) {
+        const nextData = nextDataVar || parseSafe(nextDataElement.innerHTML);
+        debug("Found next data", nextData);
+        const initialData = nextData?.props?.pageProps?.initialData;
+        const data = initialData?.data;
         const modules = data?.contentLayout?.modules || [];
-        for (const module of modules) {
-          const storeId2 = module?.configs?.ad?.storeId || module?.configs?.ad?.adsContext?.locationContext?.storeId || module?.configs?.ad?.adsContext?.locationContext?.pickupStore || module?.configs?.ad?.adsContext?.locationContext?.deliveryStore;
+        if (nextData?.pageProps?.initialTempoData?.data?.contentLayout?.pageMetadata?.location?.storeId) {
+          return nextData.pageProps.initialTempoData.data.contentLayout.pageMetadata.location.storeId;
+        }
+        if (initialData?.moduleDataByZone?.topZone2?.configs?.ad?.storeId) {
+          return initialData?.moduleDataByZone?.topZone2?.configs?.ad?.storeId;
+        }
+        if (data?.moduleDataByZone?.topZone2?.configs?.ad?.storeId) {
+          return data?.moduleDataByZone?.topZone2?.configs?.ad?.storeId;
+        }
+        if (data?.contentLayout?.pageMetadata?.location?.storeId) {
+          return data?.contentLayout?.pageMetadata?.location?.storeId;
+        }
+        for (const mod of modules) {
+          const storeId2 = mod?.configs?.ad?.storeId || mod?.configs?.ad?.adsContext?.locationContext?.storeId || mod?.configs?.ad?.adsContext?.locationContext?.pickupStore || mod?.configs?.ad?.adsContext?.locationContext?.deliveryStore;
           if (storeId2) {
             return storeId2;
           }
@@ -111,6 +191,11 @@
         const storeId = data?.contentLayout?.pageMetadata?.location?.storeId || data?.contentLayout?.pageMetadata?.location?.pickupStore || data?.contentLayout?.pageMetadata?.location?.deliveryStore || data?.product?.fulfillmentSummary?.find((product) => product?.storeId)?.storeId;
         if (storeId) {
           return storeId;
+        }
+        const deepSearched = deepSearchKeyValue(nextData, "storeId");
+        if (deepSearched) {
+          debug("Found store ID via deep search", deepSearched);
+          return deepSearched;
         }
       }
       const moduleElement = document.querySelector("[data-module-data]");
@@ -133,6 +218,10 @@
     }
     async function reportPriceOfItemToDatabase(item) {
       const storeId = getStoreId();
+      if (storeId === "unknown") {
+        log("Could not find store ID, skipping report");
+        return;
+      }
       const items = (Array.isArray(item) ? item : [item]).map((item2) => ({
         ...item2,
         storeId
@@ -145,6 +234,11 @@
         reportedItemIds[item2.itemId] = true;
       }
       debug("Reporting price of item to database", items);
+      const payload = {
+        topic: "process-prices-data",
+        payload: items
+      };
+      chrome.runtime.sendMessage(payload);
     }
     async function searchPage() {
       debug("Search page!");
@@ -296,3 +390,16 @@
     });
   })();
 })();
+/*! Bundled license information:
+
+lodash-es/lodash.js:
+  (**
+   * @license
+   * Lodash (Custom Build) <https://lodash.com/>
+   * Build: `lodash modularize exports="es" -o ./`
+   * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+   * Released under MIT license <https://lodash.com/license>
+   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+   *)
+*/

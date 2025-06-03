@@ -25,6 +25,9 @@
     },
     "default_title": "Walmart Insight"
   },
+  "background": {
+    "service_worker": "dist/walmart-inspector-background.js"
+  },
   "permissions": [
     "storage"
   ],
